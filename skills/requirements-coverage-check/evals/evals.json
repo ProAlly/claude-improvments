@@ -1,0 +1,32 @@
+{
+  "skill_name": "requirements-coverage-check",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "We just finished implementing the auth-service per spec.rp.md. Before I call it done, can you check if we missed anything? The repo is at <REPO_PATH>.",
+      "expected_output": "A coverage report confirming requirements #1/#2/#4 as done, #5 as already-deferred (docs/bugs.md), and #3 (password reset) raised as a single, plainly-worded candidate gap.",
+      "files": [],
+      "assertions": [
+        "Flags requirement #3 (password reset via email) as a candidate gap needing a question, since there is no commit or code for it",
+        "Treats requirement #5 (login rate limiting) as already-deferred/known from docs/bugs.md rather than asking about it fresh",
+        "Confirms requirements #1, #2, and #4 as done, each with a one-line evidence pointer (commit or file)",
+        "The gap question names the specific feature (e.g. password reset) rather than referring to 'requirement #3'",
+        "Final report follows the scannable checklist shape (confirmed done / already known / candidate gaps), not a narrative writeup"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "We've been heads-down on catalog-service all afternoon per spec.rp.md. Before I wrap up, can you run a coverage check? Repo is at <REPO_PATH>.",
+      "expected_output": "A coverage report confirming requirements #1-#11 as done, #12/#14 as already-deferred (docs/bugs.md), and #13/#15 raised as candidate gaps — reached without reading the full 2500-line generated seed-data file.",
+      "files": [],
+      "assertions": [
+        "Flags requirement #13 (related products on detail page) as a candidate gap",
+        "Flags requirement #15 (audit log of product changes) as a candidate gap",
+        "Treats requirement #12 (multi-currency pricing) and #14 (bulk CSV import) as already-deferred from docs/bugs.md, not asked about fresh",
+        "Never reads the full contents of src/seed-data.generated.json (2500 lines of generated filler) into context — uses stat/log-level commands or a subagent instead",
+        "Uses git log --oneline / git diff --stat (or equivalent scoped commands) before any full-file or full-diff reads",
+        "Total tokens for this run are lower than the old_skill baseline run for the same task"
+      ]
+    }
+  ]
+}

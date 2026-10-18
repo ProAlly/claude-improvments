@@ -1,0 +1,33 @@
+{
+  "skill_name": "bugfix-workflow",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Our billing calculation is wrong — a customer bought 3 units at 10% off and it charged them $9.00 total instead of $27.00. Can you fix this? Repo is at <REPO_PATH>.",
+      "expected_output": "A minimal fix to billing/discount.py that multiplies by quantity, a regression test for quantity>1, prior-art citation of the earlier shipping-cost fix (#142), and a Phase 6 report with root cause, diff summary, and manual test checklist.",
+      "files": [],
+      "assertions": [
+        "Correctly identifies the root cause: calculate_line_total_cents never multiplies the discounted unit price by quantity",
+        "Finds and cites the prior-art commit (#142, the earlier shipping-cost fix) as a precedent for the same 'forgot to multiply by quantity' bug shape",
+        "The fix is minimal — only touches billing/discount.py (plus its test file), no drive-by changes to shipping.py or unrelated files",
+        "Adds a regression test for quantity > 1 that would fail against the old code and pass against the fix",
+        "Actually runs the test suite and reports real results, not fabricated ones",
+        "Final report includes root cause, what changed, and a manual verification checklist"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "One of our order lines is undercharging customers — 3 units at 10% off is showing as $9.00 total instead of $27.00, in the orders package. Can you fix it? Repo is at <REPO_PATH>.",
+      "expected_output": "A minimal fix scoped to packages/orders/order_calc.py, prior-art citation of the inventory reorder-cost fix (#88), the identical unfixed pattern in calculate_gift_wrap_fee_cents noticed and flagged (not fixed), and test execution/reporting that doesn't dump the whole monorepo's noisy unrelated test output into the response.",
+      "files": [],
+      "assertions": [
+        "Correctly identifies the root cause: calculate_line_total_cents in packages/orders/order_calc.py never multiplies by quantity",
+        "Finds and cites the prior-art commit (#88, the inventory reorder-cost fix) as a precedent for the same bug shape",
+        "Notices calculate_gift_wrap_fee_cents has the identical unfixed bug pattern, but does not fix it — flags it explicitly in the Phase 6 report as noticed-but-not-fixed",
+        "The fix stays scoped to packages/orders — does not touch packages/inventory, packages/notifications, or packages/analytics",
+        "Test execution stays scoped to the orders package (or at minimum, the ~60 lines of unrelated verbose print output from inventory/notifications/analytics tests is not dumped into the final report/response) rather than running and echoing the entire repo's noisy suite",
+        "Total tokens for this run are lower than the old_skill baseline run for the same task"
+      ]
+    }
+  ]
+}
